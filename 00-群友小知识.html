@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 1.
+        // console.log(42.toFixed(3));    // 报错(浏览器把这个点当成了小数点，所以报错)
+        // console.log(42..toFixed(3));      // 42.000
+
+        // 2.
+        // console.log('foo'.split('') + []);   // split转化成数组['f', 'o', 'o'] 调用toString()方法
+        // console.log([1, 2] + [2, 3]);       // '1','22','3'    调用toString转化成字符串
+        // console.log({} + []);               // 会把前面当成代码块执行，然后再相加    0
+        // console.log([] + {});               //'' + '[object, Object]'
+        // 加号
+        // a.+两侧如果有一个是对象的话就调用toString进行转换，然后在继续相加
+        // b.+两侧如果有一个是字符串，那么就将另一个转换成字符串然后相加
+        // c.其他情况都转换成数字然后相加
+
+        // 3.
+        // var a = new Array(3);   // 里面是一个数的时候代表数组长度，值是undefined
+        // var b = [undefined, undefined, undefined];
+        // var c = [null, null, null];
+        // var d = [false, false, false];
+        // var e = [0, 0, 0];
+        // console.log(a.join('-'));    // --
+        // console.log(b.join('-'));    // --
+        // console.log(c.join('-'));    // --
+        // console.log(d.join('-'));    // false-false-false
+        // console.log(e.join('-'));    // 0-0-0
+        // 数组里面的undefined和null在调用join方法的时候，代表空串eg:a   '' + '-' + '' + '-' + ''
+
+        // 4.
+        // a = [1, 2, 3, 4];
+        // delete a[1];    // 删除位置一的数，这个位置没有删除，值是empty相当于undefined
+        // console.log(a.length);    // 4
+
+        // 5.
+        // 随机输出0~9之间的整数
+        // var num = parseInt(Math.random() * 10);
+        // console.log(num);
+
+        // 6.
+        // 求字符串中出现最多次数的字符
+        // var str = 'asdfghjkasdfasaaa';
+        // var obj = {};
+        // var num = 1;
+        // for(var i = 0; i < str.length; i++){
+        //     if(obj[str[i]]){
+        //         obj[str[i]]++;
+        //     }else{
+        //         obj[str[i]] = num;
+        //     }
+        // }
+        // console.log(obj);
+        // var max = 0;
+        // for(var k in obj){
+        //     if(obj[k] > max){
+        //         max = obj[k];
+        //     }
+        // }
+        // console.log(max);
+
+        // 7.
+        // var a = 1;
+        // if(function b(){}){
+        //     a += typeof(b);
+        // }
+        // console.log(a);   // 1undefined
+
+        // 8.
+        // var b = 1;
+        // function outer() {
+        //     var b = 2;
+        //     function inner(){
+        //         b++;    // b是undefined  然后++   b is NaN
+        //         var b = 3;    // b = 3
+        //         console.log(b);    // 3
+        //     }
+        //     inner();
+        // }
+        // outer();
+
+        // 9.
+        // 所有对象都有原型？   a.对   b.错
+        // var obj1 = Object.prototype;
+        // console.log(obj1);  // 1. 原型链的顶端是没有原型的，称之为基础对象
+        // var obj2 = Object.create(null);
+        // console.log(obj2); // 2. Object.create(null)
+
+        // 10
+        // function inherit(Target, Origin){
+        //     function F() {};
+        //     F.prototype = Origin.prototype;
+        //     Target.prototype = new F();
+        //     Target.prototype.cunstuctor = Target;
+        //     Target.prototype.unber = Origin.prototype;
+        // }
+        // Animal.prototype = {
+        //     name1:'000',
+        //     name2:{
+        //         aaa:'111',
+        //         bbb:'222'
+        //     }
+        // }
+
+        // function Animal(){}
+        // function Cat() {}
+        // inherit(Cat, Animal);
+        // var cat = new Cat();
+        // var animal = new Animal();
+        // cat.name1 = '999';
+        // console.log(animal.name1);   // 000
+        // cat.name2.aaa = '666';
+        // console.log(animal.name2.aaa);   // 666
+        // 我们不能重写原型中的值，但是我们可以修改原型中引用类型的值
+
+        // 10
+        // 下面代码的执行结果
+        // function getInfo(member,year){
+        //     member.name = 'css';
+        //     year = '1998';
+        // }
+        // var person = {name: 'html'};
+        // var birthYear = '1997';
+        // getInfo(person, birthYear);
+        // console.log(person, birthYear);    // css  1997
+        // // 解释：此代码段就相当于
+        // var person = {name: 'html'};
+        // member = person;
+        // member.name = 'css'
+        // var birthYear = '1997';
+        // year = birthYear;
+        // year = '1998';
+        // console.log(birthYear);  // 引用值是地址，原始值是直接复制的
+
+        // 11
+        // var a = { n: 1 }
+        // var b = a;
+        // a.m = a = { m: 2 };
+        // console.log(b);   //{n: 1, m: {m:2}}
+        // 错误的解释：首先a指向房间1，然后b拷贝了a的地址，也指向房间1。此时a指向了另一个房间2，然后又在这个房间里面添加一个m属性
+
+        // 正确的理解：首先a指向房间1，然后b拷贝了a的地址，也指向房间1。然后点的优先级高于赋值，（在js中，要对一个值进行赋值，会去查寻源值，a不是源值，而m:2才是在堆里的源值，故a.m为m:2）也就是说先是a.m = {m:2},此时的a还没有改变房间，所以。。。
+
+        // 12
+        // 常见的主流浏览器及内核
+        // IE                trident
+        // Chrome            webkit/blink
+        // Opera              presto
+        // Firefox            Gecko
+        // Safari             webkit
+
+        // 13
+        // function Bar(cb){
+        //     if(typeof cb !== 'function'){
+        //         return;
+        //     }
+        //     for(var i = 0; i < 4; i++){
+        //         console.log(cb(i, i-1));
+        //     }
+        // }
+        // Bar(parseInt);
+        // console.log(typeof parseInt);
+
+        // 14
+        // function Foo() {
+
+        // }
+        // Foo.prototype = {value:'bar'};
+        // var foo = new Foo();
+        // console.log(foo.constructor);  // Object
+        // 一开始的想法foo的constructor指向的是Foo构造函数
+        // 解释：foo的constructor继承的构造函数的原型身上的属性，构造函数原型里面隐式的有这个属性指向自己，但是我们改变了这个原型的指向，所以里面的constructor指向Object
+
+        // 15
+        // function test(){
+        //     var n = 4399;
+
+        //     function add() {
+        //         n++;
+        //         console.log(n);
+        //     }
+
+        //     return {n:n, add:add};
+        // }
+        // var result = test();
+        // var result2 = test();
+        // result.add();    // 4400
+        // result.add();    // 4401
+        // console.log(result.n);   //4399
+        // result2.add();    // 4400
+        //     解释：（1）当第一次执行函数之前，先进行预编译
+        //     0 testAO{
+        //         n: 4399
+        //         add: function add(){}
+        //    }
+        //     1 GO{
+        //     }
+        //     （2）然后把对象返回出去 {n: 4399, add:function add(){}} 注意此n非彼n，对象里面这个n属性和函数里面的没有一点关系。
+        //     （3）当第二次执行函数之前一样进行预编译，返回一个和第一次一样的对象
+        //     （4）然后result.add(),调用这个方法，闭包，test函数的执行期上下文虽然销毁，但是在定义add函数的时候，保存了test的执行期上下文，所以,n++，变成4400,在调用add的时候变成了4401
+        //     0 addAO{
+        //     }
+        //     1 testAO{
+        //         n: 4399
+        //         add: function add(){}
+        //    }
+        //     2 GO{
+        //     }
+        //     （5）当打印result.n的时候，这个n是对象里面的属性，和函数里面的n没有半毛钱关系
+
+        // 16
+        // 'use strict'
+        // var name = 'window';
+        // var obj = {
+        //     name : 'obj'
+        // }
+        // function show () {
+        //     console.log(this.name);
+        // }
+        // show.call(obj);   // obj
+        // show();    // 报错
+        // 解释：在严格模式下，this如果没有声明指向谁，那就是undefined
+
+        // 17
+        // var name = 'World';
+        // (function () {
+        //     // console.log(name);
+        //     if(typeof name === 'undefined') {
+        //         var name = 'Jack';
+        //         console.log('GoodBye' + name);   // GoodBye Jack
+        //     }else{
+        //         console.log('Hello' + name);
+        //     }
+        // }())
+
+        // 18
+        // function Bar() {
+
+        // }
+        // console.log(Bar.prototype === Function);   // false
+        // console.log(Bar.prototype === Function.prototype);  // fasle
+        // console.log(Bar.__proto__ === Function.prototype);  // true
+        // console.log(new Bar().__proto__ === Bar.prototype);  // true
+
+        // 第三个，构造函数的__proto__，Bar其实是Function构造函数的对象
+
+        // 19
+        // console.log('A' - 'B');  // NAN
+
+        // 20
+        // function showCase(value) {
+        //     switch (value) {
+        //         case 'A':
+        //             console.log('Case A');
+        //             break;
+        //         case 'B':
+        //             console.log('Case B');
+        //             break;
+        //         case undefined:
+        //             console.log('undefined');
+        //             break;
+        //         default:
+        //             console.log('Do not know!');
+        //     }
+        // }
+        // showCase(new String('A'));
+        // console.log(new String('A'));   //他是个对象
+
+        // 21
+        // var obj = {
+        //     n: 10,
+        //     m: obj.n * 10
+        // }
+
+        // console.log(obj.m)    //报错赋值先执行后面
+
+        // 22
+        // function bar() {
+        //     return foo;
+        //     foo = 10;
+        //     function foo() { }
+        //     var foo = 11;
+        // }
+        // console.log(bar())    // function foo() {}  里面有函数声明
+
+        // 23
+        // function foo(a) {
+        //     var a;
+        //     return a;
+        // }
+        // function bar(a) {
+        //     var a = 'bye';
+        //     return a;
+        // }
+        // console.log([foo('hello'), bar('hello')])    // ['hello', 'bye']
+
+        // 24
+        // (function () {
+        //     var x = y = 1;
+        // })();
+        // console.log(y);   // 1
+        // console.log(x);   // 报错  立即执行函数执行完，执行期上下万销毁
+
+        // 25
+        // var F = function () { };
+        // Object.prototype.a = function () { };
+        // Function.prototype.b = function () { };
+        // var f = new F();
+        // 对象f的__proto__ 指向F构造函数的原型（F.prototype）,然后这个原型又指向Object.prototype。 构造函数F既是函数，也是对象（万物皆对象），他的__proto__指向Function.prototype，这个原型又指向Object.protottype
+        // A: f能取到a, 但是不能取到b   true
+        // B: f能取到a, b
+        // C: F能取到b，不能取到a
+        // D. F能取到a，不能取到b
+        // console.log(f.a);   function () { }
+        // console.log(f.b);   undefined
+        // console.log(F.b);   function () { }
+        // console.log(F.a);   function () { }
+
+        // 26(有点不明白啊)
+        // var obj = {};
+        // obj.log = console.log;
+        // obj.log.call(console, this);   // 最后指向window
+        // obj.log.call(console, this)相当于console.log(this)
+
+        // 27
+        // function Person(firstName, lastName) {
+        //     this.firstName = firstName;
+        //     this.lastName = lastName;
+        // }
+
+        // var lydia = new Person("Lydia", "Hallie");
+        // var sarah = Person("Sarah", "Smith");
+
+        // console.log(lydia);
+        // console.log(sarah);   // undefined  window调用了函数，里面的this指向window，函数里面啥也没有
+        // console.log(window.firstName);
+        // console.log(window.lastName);
+
+        // 28
+        // function buildList(list) {
+        //     var result = [];
+        //     for (var i = 0; i < list.length; i++) {
+        //         var len = result.length;
+        //         var item = "item" + i;
+        //         result[len] = function () {
+        //             console.log(item + list[i]);
+        //         };
+        //     }
+        //     return result;
+        // }
+        // function testList() {
+        //     var fnlist = buildList([1, 2, 3]);
+
+        //     for (var j = 0; j < fnlist.length; j++) {
+        //         fnlist[j]();
+        //     }
+        // }
+        // testList();     // item2undefined item2undefined item2undefined
+
+        // 29
+        // (function () {
+        //     try {
+        //         throw new Error();
+        //     } catch (x) {
+        //         var x = 1,
+        //             y = 2;
+        //         console.log(x);   // 1
+        //     }
+        //     console.log(x);   // undefined
+        //     console.log(y);   // 2
+        //     console.log(window.y);   // undefined
+        // }())
+        // 推测，并不可靠
+        // catch里面没有作用域，所以varx,y是相当于在函数内部的声明，函数内部的AO是，x,y。然后在catch里面有一个变量x，所以里面打印的x是1，但是在函数内部的x是没有值的。
+
+        // 30
+        // var a = 10;
+        // var obj = {
+        //     a: 30,
+        //     say: function () {
+        //         return this.a;
+        //     }
+        // }
+        // function f() {
+        //     var a = 20;
+        //     return obj.say;
+        // }
+        // console.log(f()());
+        //打印的是10，第二次执行的函数也是window调用
+
+        // 30 如何实现一个自适应的圆  D
+        //A： width：100px;height:100px;border-radius:50px;
+        // 因为是一个自适应的圆，所以我们的正方形也要自适应，然后在border-radius:50px;
+        //B： width：30%;height:30%;border-radius:50%;
+        // 宽度占浏览器窗口的30%，高度占浏览器高度的30%， 但是浏览器的宽高并不相等，所以不是一个方形
+        //C： width：30%;height:0;padding:30%;border-radius:50%;
+        //D： width：30%;height:0;padding-top:30%；border-radius:50%;
+        // padding设置百分比都是基于父级的宽度进行计算，无论是竖直方向的padding还是水平方向的
+
+
+
+        // 31.阿里面试题(立即执行函数执行完，函数的名字也就没有啦)
+        // function test(a, b, c, d) {
+        //     console.log(a + b + c + d);
+        // } (1, 2, 3, 4);
+        // 解释：函数声明不能在后面使用括号，只有函数表达式在后面使用括号才会当做立即执行函数执行。
+        // 但是这里，括号里面传了数值,浏览器没有把他读成括号,就把他和函数声明分开了,不执行也不报错
+
+        // 32.
+        // function sayHi(){
+        //     console.log(name);
+        //     console.log(age);
+        //     var name = 'cj';
+        //     let age = 21;
+        // }
+        // sayHi();
+        // 输出undefined，报错 解释：var变量声明提前，值为undefined，let声明提升到暂时性死区，只有读到该行代码的时候，才会执行。
+        // 可以理解为let和const声明不会变量提升
+
+        // 33.
+        // for (var i = 0; i < 3; i++) {
+        //     setTimeout(() => console.log(i), 1)
+        // }
+
+        // for (let i = 0; i < 3; i++) {
+        //     setTimeout(() => console.log(i), 1)
+        // }
+        // 输出：3 3 3和0 1 2  因为时间循环，setTimeout的回调函数会在遍历结束后执行。第一次遍历的i是全局作用域下的，最后循环完全局的i是3。然后执行被放入事件队列中的回调函数。而let声明不一样，let声明会创建块级作用域，把i绑定到块级作用域内，for每循环一次都会声明一个i变量并赋值。
+
+        // 34
+        // let c = { greeting: 'Hey!' };
+        // let d;
+
+        // d = c;
+        // c.greeting = 'Hello';
+        // console.log(d.greeting); //Hello
+        // 输出：Hello 引用值地址
+
+        // 35
+        // let a = 3
+        // let b = new Number(3)
+        // let c = 3
+
+        // console.log(a == b) //true
+        // console.log(a === b) //false
+        // console.log(b === c) //false
+        // console.log(new Number(3)); //包装类，看着像数字，其实是对象
+
+        // 36
+        // class Chameleon {
+        //     static colorChange(newColor) {
+        //         this.newColor = newColor
+        //         return this.newColor
+        //     }
+
+        //     constructor({ newColor = 'green' } = {}) {
+        //         this.newColor = newColor
+        //     }
+        // }
+
+        // const freddie = new Chameleon({ newColor: 'purple' })
+        // freddie.colorChange('orange')  //报错
+        // 注意：虽然做对了，但是得去复习es6的类，这题考点简单。但是里面有好多内容不会
+        // static是静态方法，也就是这个类（Chameleon）身上的，并不能传递给实例。因为freddie用了，所以报错
+
+        // 37.
+        // let greeting
+        // greetign = {} // Typo!（这里写的是greetign而不是声明的greeting）
+        // console.log(greetign) //{}
+        // 在这里声明了全局变量greeting，我们将greeting错写成greetign，并赋值对象，这里浏览器解析器，会在window上创建一个属性greetign，并赋值对象（window.greetign={}）为了避免这种问题可以使用严格模式，声明的对象必须赋值
+
+        // 38.
+        // 问：a=?的时候，可以进到条件语句里面
+        // var a = {
+        //     i: 1,
+        //     toString(){
+        //         return a.i++;
+        //     }
+        // }
+        // if (a==1&&a==2&&a==3){
+        //     console.log(a)
+        //     console.log('成功啦');
+        // }
+
+        // 以下习题可以看该链接，有详细的解释
+        // https://github.com/lydiahallie/javascript-questions
+        // 39.
+        // function sayHi() {
+        //     console.log(name)
+        //     console.log(age)
+        //     var name = 'Lydia'
+        //     let age = 21
+        // }
+        // sayHi() // undefined 报错
+
+        // 40.
+        // for (var i = 0; i < 3; i++) {
+        //     setTimeout(() => console.log(i), 1)
+        // }
+        // for (let i = 0; i < 3; i++) {
+        //     setTimeout(() => console.log(i), 1)
+        // }
+        // 3 3 3 0 1 2
+        /*第一个var声明，变量i在全局。setTimeout是异步的，等到循环结束的时候访问全局的i*/
+        /*第二个let声明，变量i在块级作用域。等到每一次都会在内部创建一个变量i*/
+
+        // 41.
+        // const shape = {
+        //     radius: 10,
+        //     diameter() {
+        //         return this.radius * 2
+        //     },
+        //     perimeter: () => 2 * Math.PI * this.radius
+        // }
+        //
+        // shape.diameter()  // 20
+        // shape.perimeter()  // NaN  this指向window返回undefined
+
+        // 42.
+        // +true;   // 1
+        // !"Lydia";  // false
+
+        // 43.
+        // const bird = {
+        //     size: 'small'
+        // }
+        //
+        // const mouse = {
+        //     name: 'Mickey',
+        //     small: true
+        // }
+        /*
+        * A: mouse.bird.size是无效的 √
+        B: mouse[bird.size]是无效的 × true
+        C: mouse[bird["size"]]是无效的 × true
+        D: 以上三个选项都是有效的
+        * */
+
+        // 44.
+        // let c = { greeting: 'Hey!' }
+        // let d
+        //
+        // d = c
+        // c.greeting = 'Hello'
+        // console.log(d.greeting) // Hello
+
+        // 45.
+        // let a = 3
+        // let b = new Number(3)
+        // let c = 3
+        //
+        // console.log(a == b)  // true
+        // console.log(a === b)  // false
+        // console.log(b === c) // false
+
+        // 46.
+        // class Chameleon {
+        //     static colorChange(newColor) {
+        //         this.newColor = newColor
+        //         return this.newColor
+        //     }
+        //
+        //     constructor({ newColor = 'green' } = {}) {
+        //         //上面是解构在赋值newColor=‘green’
+        //         this.newColor = newColor
+        //     }
+        // }
+        //
+        // const freddie = new Chameleon({ newColor: 'purple' })
+        // freddie.colorChange('orange')  // 报错 静态方法是Chameleon的方法，不能让实例使用
+
+        // 47.
+        // 输出什么
+        // function Person(firstName, lastName) {
+        //     this.firstName = firstName
+        //     this.lastName = lastName
+        // }
+        //
+        // const lydia = new Person('Lydia', 'Hallie')
+        // const sarah = Person('Sarah', 'Smith')
+        // new的时候会隐式的返回this对象，如果在函数内部显示的返回了基本数据类型，则无用之功。如果显示的返回了复杂数据类型，则this无效
+        // console.log(lydia)   // {firstName: 'lydia', lastName: 'Hallie'}
+        // console.log(sarah)   // undefined
+
+        // 48.
+        // 事件的捕获和冒泡
+        // 捕获从结构外面往里面去，到达目标
+        // 然后开始冒泡 从目标往上
+
+        // 49.
+        // let number = 0
+        // console.log(number++)  // 0
+        // console.log(++number)  //2
+        // console.log(number)   // 2
+
+        // 50.
+        // function getPersonInfo(one, two, three) {
+        //     console.log(one)
+        //     console.log(two)
+        //     console.log(three)
+        //     console.log(arguments)
+        // }
+        //
+        // const person = 'Lydia'
+        // const age = 21
+        //
+        // getPersonInfo`${person} is ${age} years old`
+        // ['', 'is', '', 'years old']  'Lydia' 21
+        /*函数使用模板字符串传递参数，第一个值是除了${}以外的所有字符组成的数组， 剩下的参数就代表${}里面的数值*/
+
+        // 51.
+        // const obj = { 1: 'a', 2: 'b', 3: 'c' }
+        // const set = new Set([1, 2, 3, 4, 5])
+        //
+        // obj.hasOwnProperty('1')  //true
+        // obj.hasOwnProperty(1)    // true
+        // set.has('1')         //false
+        // set.has(1)        //true
+        /*所有对象的键在底层都是字符串，对于set集合他不是这样工作的，是什么就是什么*/
+    </script>
+</body>
+
+</html>
