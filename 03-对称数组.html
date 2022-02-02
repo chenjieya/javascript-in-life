@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script>
+		// 面对面， 脸对脸， 嘴对嘴， 上海自来水来自海上
+		const arr = ['a', 'b', 'c', 'c', 'b', 'a'];
+		const arr1 = ['上', '海', '自', '来', '水', '来', '自', '海', '上'];
+		const arr2 = ['a', 'b', 'c', 'a', 'b', 'c'];
+
+		function symmetric(arr) {
+			let newArr = [];
+			for(let i = arr.length - 1; i >= 0; i--) {
+				newArr.push(arr[i]);
+			}
+
+			// for(let i = 0; i < arr.length; i++) {
+			// 	if(arr[i] !== newArr[i]) {
+			// 		return false
+			// 	}
+			// }
+			// return true;
+			return arr.every((item, index) => {
+				return item === newArr[index];
+			})
+		}
+
+
+		function symmetric(arr) {
+			var start = 0;
+			var end = arr.length - 1;
+			for(let i = 0; i < arr.length; i++) {
+				start = i;
+				end = arr.length - 1 - i;
+				if(start >= end) {
+					break;
+				}
+				if(arr[start] !== arr[end]) {
+					return false
+				}
+			}
+			return true;
+		}
+
+		function symmetric(arr) {
+			var start = 0;
+			var end = arr.length - 1;
+			
+			while(start < end) {
+				if(arr[start] !== arr[end]) {
+					return false;
+				}
+
+				start ++;
+				end --;
+			}
+			return true;
+		}
+
+
+		console.log(symmetric(arr), symmetric(arr1), symmetric(arr2));
+		
+	</script>
+</body>
+
+</html>
