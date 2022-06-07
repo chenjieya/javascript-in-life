@@ -1,0 +1,107 @@
+<!--
+ * @Author: chenjie
+ * @Email: 18822126754@163.com
+ * @Date: 2022-06-07 18:00:51
+ * @LastEditTime: 2022-06-07 19:57:47
+ * @Description: 正则表达式
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 正则方法 test字符串有没有符合的片段 exec
+        // 字符串方法 match
+        // i 忽视大小写 g 全局匹配 m 多行匹配
+
+        const str = 'ababab\nab';
+        const reg = /ab/;
+        console.log(str.match(reg)); // 把字符串中符合正则表达式得片段取出来,返回数组
+        const reg1 = /ab/g;
+        console.log(str.match(reg1)); // 把全局匹配到的都取出来
+        const reg2 = /^a/g;
+        console.log(str.match(reg2)); // ['a']  虽然字符串里面有换行,但是没有多行匹配的功能,他还是匹配不出来
+        const reg3 = /^a/gm;
+        console.log(str.match(reg3)); // ['a', 'a']  多行匹配,第二行的a也是开头字母
+
+        // 表达式
+        const str1 = 'ab1cd';
+        const reg4 = /[^a][^b]/g;
+        console.log(str1.match(reg4)); // 第一位不是a ['b1', 'cd']
+        const str2 = 'abcbcd';
+        const reg5 = /(abc|bcd)/g;
+        console.log(str2.match(reg5));
+
+        // 元字符
+        // \w [0-9A-z_]
+        // \W [^\w]
+        // \d [0-9]
+        // \D [^\d]
+        const str3 = 'c*';
+        const reg6 = /[\w\*]/;
+        console.log(str3.match(reg6)); // ['c']  如果加g则是['c', '*']
+        const str4 = 'abc cbdfe bcbd';
+        const reg7 = /\bcbd/g;
+        console.log(str4.match(reg7));
+
+        // 量词
+        // + 1到无数次
+        // * 0到无数次
+        // ? 0到1个
+        const str5 = 'abc';
+        const reg8 = /\w+/;
+        console.log(str5.match(reg8));
+
+        // exec  不加g,游标根本不会动,一直匹配第一个    match如果不加g则和exec类似,如果加g则翻脸不认人
+        const str6 = 'abababab';
+        const reg9 = /ab/g;
+        console.log(reg9.lastIndex);  // 游标(匹配开始的地方)
+        console.log(reg9.exec(str6));
+        console.log(reg9.lastIndex);
+        console.log(reg9.exec(str6));
+        console.log(reg9.lastIndex);
+        console.log(reg9.exec(str6));
+        console.log(reg9.lastIndex);
+        console.log(reg9.exec(str6));
+        console.log(reg9.lastIndex);
+        console.log(reg9.exec(str6));
+        console.log(reg9.lastIndex);
+        console.log(reg9.exec(str6));
+
+        // ()子表达式
+        const str7 = 'aaaa';
+        const reg10 = /(\w)\1/g;
+        console.log(str7.match(reg10)); //['aa', 'aa']
+
+        const str8 = 'aabb';
+        const reg11 = /(\w)\1(\w)\2/g;
+        console.log(str8.match(reg11)); //['aabb']
+
+        // replace
+        // 把aabb倒过来
+        let str9 = 'aabb';
+        const reg12 = /(\w)\1(\w)\2/g;
+        // console.log(str9.replace(reg12, '$2$2$1$1'));
+
+        // 第一个参数是正则表达式的匹配结果
+        str9.replace(reg12, function($, $1, $2) {
+            console.log($);
+        })
+
+
+        
+    </script>
+    <script>
+        // 写一个正则表达式,检验字符串首尾是否含有数字?
+        const testreg = /^\d|\d$/g;
+        const teststr = '123a';
+        console.log(testreg.test(teststr));
+        
+    </script>
+</body>
+</html>
